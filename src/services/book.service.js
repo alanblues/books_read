@@ -41,8 +41,8 @@ export const updateBook = async idBook => {
 
     if(document.exists) {
         await docRef.set({
-            author: 'Marco Aurelio',
-            title: 'Meditaciones',
+            author: document.data().author,
+            title: document.data().title,
             read: !document.data().read
         })
         .then(() => response = true)

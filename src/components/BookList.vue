@@ -1,7 +1,7 @@
 <template>
     <section class="card">
         <div class="list-group list-hight border-0">
-            <h4 class="mt-4 text-center" v-if="existBooks">No hay registro</h4>
+            <h4 class="my-4 text-center" v-if="existBooks">No hay registro</h4>
             <article v-for="book in books.books" v-bind:key="book.id"
                 class="list-group-item d-flex justify-content-between align-items-center"
                 v-bind:class="book.read ? 'list-group-item-success' : ''">
