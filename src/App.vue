@@ -1,44 +1,47 @@
 <template>
-  <div class="container mt-5">
-    <AddBook v-on:emitAddNewBook="addNewBook" />
-    <BookList v-bind:books={books} />
-  </div>
+  <main class="container mt-5 mb-5">
+    <AddBook v-on:emitrefreshBooks="loadBooks" />
+    <LoadingApp v-if="loading" />
+    <BookList v-else
+      v-bind:books={books}
+      load="true"
+      v-on:emitLoading="setLoading"
+      v-on:emitReadBook="loadBooks" />
+  </main>
 </template>
 
 <script>
 import AddBook from "./components/AddBook/AddBook.vue";
+import LoadingApp from "./components/Loading.vue";
 import BookList from "./components/BookList.vue";
-import { getBooks, registerBook } from "./providers/books.service";
-import { db } from "./utils/firebase";
+import { getBooks, saveBook } from "./services/book.service";
 
 export default {
   name: 'App',
-  components: { AddBook, BookList },
+  components: { AddBook, LoadingApp, BookList },
   data() {
     return {
-      books: getBooks()
+      books: [],
+      loading: true
     }
   },
   methods: {
-    addNewBook(book) {
-      registerBook(book);
-      this.books = null;
-      this.books = getBooks();
+    async addNewBook(book) {
+      await saveBook(book);
+      alert('Libro registrado correctamente!');
+      this.loadBooks();
     },
-    guardarFirebase: async () => {
-      console.log('firebase');
-      await db.collection("books").add({
-        title: "React Native learn from scratch",
-        autor: "Alan Parra",
-        read: false
-      })
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-        });
+    async loadBooks() {
+      this.loading = true;
+      this.books = await getBooks();
+      this.loading = false;
+    },
+    setLoading(valueLoading) {
+      this.loading = valueLoading;
     }
+  },
+  created() {
+    this.loadBooks();
   }
 }
 </script>

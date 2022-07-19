@@ -1,17 +1,17 @@
 <template>
-    <section class="mb-3">
-        <div class="card">
-            <div class="card-header pb-1">
+    <section class='mb-3'>
+        <div class='card'>
+            <div class='card-header pb-1'>
                 <h5>Informaci&oacute;n del libro</h5>
             </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="title">Tit&uacute;lo</label>
-                    <input type="text" class="form-control form-control-lg" v-model="book.title" />
+            <div class='card-body'>
+                <div class='form-group'>
+                    <label for='title'>Tit&uacute;lo</label>
+                    <input type='text' class='form-control form-control-lg' v-model='book.title' />
                 </div>
-                <div class="form-group">
-                    <label for="author">Autor</label>
-                    <input type="text" class="form-control form-control-lg" v-model="book.author" />
+                <div class='form-group'>
+                    <label for='author'>Autor</label>
+                    <input type='text' class='form-control form-control-lg' v-model="book.author" />
                 </div>
 
             </div>
@@ -25,24 +25,26 @@
 </template>
 
 <script>
+import { saveBook } from '@/services/book.service';
+
 export default {
-    name: "FormRegister",
+    name: 'FormRegister',
     data() {
         return {
-            book: {
-                title: '',
-                author: ''
-            }
+            book: { title: '', author: '' }
         }
     },
     methods: {
-        sendBookData() {
+        async sendBookData() {
             const book = {
                 title: this.book.title,
                 author: this.book.author,
                 read: false
             };
-            this.$emit("emitSendBook", book);
+            const response = await saveBook(book);
+            if (response) {
+                this.$emit('emitRefreshBook');
+            }
         }
     },
     computed: {

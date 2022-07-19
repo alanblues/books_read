@@ -1,6 +1,6 @@
 <template>
-    <ButtonRegister v-if="!registering" v-on:emitRegistering="onRegistering" />
-    <FormRegister v-else v-on:emitSendBook="sendBook" />
+    <ButtonRegister v-if="!registering" @click="onRegistering" />
+    <FormRegister v-else v-on:emitRefreshBook="refreshBook" />
 </template>
 
 <script>
@@ -17,8 +17,8 @@ export default {
     },
     methods: {
         onRegistering() {this.registering = true; },
-        sendBook(book) {
-            this.$emit("emitAddNewBook", book);
+        refreshBook() {
+            this.$emit("emitrefreshBooks");
             this.registering = false;
         }
     }
