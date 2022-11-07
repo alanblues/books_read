@@ -1,63 +1,53 @@
 <template>
-    <section class="card">
-        <div class="list-group list-hight border-0">
-            <h4 class="my-4 text-center" v-if="existBooks">No hay registro</h4>
-            <article v-for="book in books.books" v-bind:key="book.id"
-                class="list-group-item d-flex justify-content-between align-items-center"
-                v-bind:class="book.read ? 'list-group-item-success' : ''">
-                <div>
-                    <h5 class="mb-0">{{ book.title }}</h5>
-                    <span class="text-muted font-italic">{{ book.author }}</span>
-                </div>
-                <button class="btn" v-bind:class="[book.read ? 'btn-dark' : 'btn-info']"
-                    v-on:click="onReadBook(book.id)">
-                    {{ book.read ? 'Reiniciar' : 'Terminar' }}
-                </button>
-            </article>
-        </div>
-        <div class="card-footer">
-            <div class="d-flex flex-column">
-                <h5><span class="badge badge-success">{{ reads }} Lecturas terminadas</span></h5>
-                <h5><span class="badge badge-warning">{{ pendings }} Lecturas pendientes</span></h5>
-            </div>
-        </div>
-    </section>
+  <section class="list-size">
+      <article
+      class="mt-2 rounded border pb-1 pt-2 px-3 d-flex flex-column"
+      v-for="({id, title, author, read}) in books" v-bind:key="id"
+      :class="read ? 'book_read' : ''"
+    >
+      <div class="d-flex flex-column">
+        <span class="font-weight-bold">{{ title }}</span>
+        <span class="text-muted">{{ author }}</span>
+      </div>
+      <div class="d-flex flex-colum justify-content-cente my-2">
+        <button :disabled="enableOption" v-if="!read" v-on:click="onRead(id)" class="btn btn-success btn-sm mr-2">Marcar como leido</button>
+        <button :disabled="enableOption" v-if="read" v-on:click="onReset(id)" class="btn btn-info btn-sm mr-2">Volver a leer</button>
+        <button :disabled="enableOption" @click="onRemove(id)" class="btn btn-danger btn-sm">Quitar de la lista</button>
+      </div>
+    </article>
+  </section>
 </template>
 
 <script>
-import { updateBook } from '../services/book.service';
-
 export default {
-    name: 'BookList',
-    props: {
-        books: Object
-    },
-    methods: {
-        async onReadBook(idBook) {
-            const result = await updateBook(idBook);
-            if (result) {
-                this.$emit('emitReadBook');
-            }
-        }
-    },
-    computed: {
-        existBooks() {
-            return this.books.books == null || this.books.books.length == 0;
-        },
-        reads() {
-            return this.books.books.filter(r => r.read === true).length;
-        },
-        pendings() {
-            return this.books.books.filter(r => r.read === false).length;
-        }
-    },
-}
+  name: "BookList2",
+  props: ['books', 'enableOption'],
+  setup(props, context) {
+    const onRead = idBook =>  context.emit('onUpdate', idBook, true);
+    const onReset = idBook => context.emit('onUpdate', idBook, false);
+
+    const onRemove = idBook => {
+      const isRemove = confirm('¿Desea elimninar el libro?');
+      if (isRemove) {
+        context.emit('onRemove', idBook)
+      }
+    };
+
+    return {onRead, onReset, onRemove}
+  }
+};
 </script>
 
-<style scoped lang="scss">
-.list-hight {
+<style scoped>
+  .list-size {
     overflow-y: scroll;
-    // height: 600px;
-    max-height: 600px;
-}
+    height: 400px;
+  }
+
+  .book_read {
+    border-left: 3px solid #28a745!important;
+  }
+  /* .read_pending {
+    border-left: 2px solid #28a745;
+  } */
 </style>

@@ -34,21 +34,37 @@ export const saveBook = async book => {
     return response;
 }
 
-export const updateBook = async idBook => {
+export const updateBook = async (idBook, read) => {
     let response;
     const docRef = db.collection('books').doc(idBook);
     const document = await docRef.get();
 
-    if(document.exists) {
+    if (document.exists) {
         await docRef.set({
             author: document.data().author,
             title: document.data().title,
-            read: !document.data().read
+            read: read
         })
-        .then(() => response = true)
-        .catch(() => response = false)
+            .then(() => response = true)
+            .catch(() => response = false)
     } else {
         response = false;
     }
+    return response;
+}
+
+export const removeBook = async idBook => {
+    let response;
+
+    await db.collection('books')
+        .doc(idBook).delete()
+        .then(suc => {
+            console.log('eliminado', suc);
+            response = true;
+        }).catch(err => {
+            console.log('error', err);
+            response = false;
+        });
+
     return response;
 }
