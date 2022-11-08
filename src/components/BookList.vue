@@ -1,7 +1,7 @@
 <template>
   <section class="list-size">
       <article
-      class="mt-2 rounded border pb-1 pt-2 px-3 d-flex flex-column"
+      class="mt-2 rounded-0 border-bottom pb-1 pt-2 px-3 d-flex flex-column"
       v-for="({id, title, author, read}) in books" v-bind:key="id"
       :class="read ? 'book_read' : ''"
     >

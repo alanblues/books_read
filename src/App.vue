@@ -1,7 +1,7 @@
 <template>
-  <section class="container my-5">
+  <section class="container-fluid">
     <div class="card shadow">
-      <Title titleText="Mis Lecturas" v-on:closeForm="handleSetOpenForm" />
+      <Title titleText="Mis Libros" v-on:closeForm="handleSetOpenForm" />
       <div class="card-body">
         <BookList
           :books="books"
